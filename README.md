@@ -25,3 +25,7 @@ docker build -t demo-openai .
 ```
 Running on http://localhost
 - Original docker registry repository [dimayeshenko](https://hub.docker.com/r/dimayeshenko/demo-openai)
+  
+
+## name: admin
+## password: spicy-mustard

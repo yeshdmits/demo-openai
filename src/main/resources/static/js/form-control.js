@@ -60,25 +60,30 @@ function onSubmitBulk(event) {
 }
 
 function sendRequest(request) {
-  let docId = document.querySelector('#session').innerHTML
+  let docId = document.querySelector('#session').innerHTML;
   const formData = new FormData();
-  formData.append("request", request)
-  $.ajax({
-    type: 'POST',
-    url: '/api/v1/document/' + docId,
-    data: formData,
-    processData: false,
-    contentType:false,
-    error : function() {
-      document.querySelector('#response').innerHTML = 'error'
-    },
-    success: function (data) {
-      let parse = JSON.parse(JSON.stringify(data));
-      document.querySelector('#response').innerHTML = parse['response']
-      document.querySelector('#recognizedText').innerHTML = parse['text']
+  formData.append("request", request);
+
+  fetch('/api/v1/document/' + docId, {
+    method: 'POST',
+    body: formData,
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
+    return response.json();
+  })
+  .then(data => {
+    document.querySelector('#response').innerHTML = data.response;
+    document.querySelector('#recognizedText').innerHTML = data.text;
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation:', error);
+    document.querySelector('#response').innerHTML = 'error';
   });
 }
+
 
 function uploadFile() {
   const form = document.getElementById('uploadFileForm');
@@ -90,26 +95,28 @@ function uploadFile() {
 function upload(blob) {
   const oMyForm = new FormData();
   oMyForm.append("file", blob);
-  $.ajax({
-    type: 'POST',
-    url: '/api/v1/upload',
-    data: oMyForm,
-    enctype: 'multipart/form-data',
-    processData: false,
-    contentType:false,
-    error : function() {
-      document.querySelector('#session').innerHTML = 'error'
-      document.querySelector('#sessionContainer').style.display = 'block'
-    },
-    success: function (data) {
-      let response = JSON.parse(JSON.stringify(data));
-      document.querySelector('#sessionContainer').style.display = 'block'
-      document.querySelector('#showPrompt').removeAttribute('disabled')
 
-      document.querySelector('#session').innerHTML = response['uuid']
-      document.querySelector('#recognizedText').innerHTML = response['text']
-      document.querySelector('#requestOpenAI').removeAttribute("hidden")
+  fetch('/api/v1/upload', {
+    method: 'POST',
+    body: oMyForm,
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
+    return response.json();
+  })
+  .then(data => {
+    document.querySelector('#sessionContainer').style.display = 'block';
+    document.querySelector('#showPrompt').removeAttribute('disabled');
+    document.querySelector('#session').innerHTML = data.uuid;
+    document.querySelector('#recognizedText').innerHTML = data.text;
+    document.querySelector('#requestOpenAI').removeAttribute('hidden');
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation:', error);
+    document.querySelector('#session').innerHTML = 'error';
+    document.querySelector('#sessionContainer').style.display = 'block';
   });
 }
 
