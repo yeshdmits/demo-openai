@@ -47,5 +47,5 @@ public class Document {
   private String promptText;
   @Column(name = DOCUMENT_TYPE)
   @Enumerated(EnumType.STRING)
-  private DocumentTypeEnum documentType;
+  private ProfileTypeEnum documentType;
 }

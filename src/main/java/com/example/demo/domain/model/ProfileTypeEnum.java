@@ -1,6 +1,6 @@
 package com.example.demo.domain.model;
 
-public enum DocumentTypeEnum {
+public enum ProfileTypeEnum {
 
   TEXT, SPEECH
 }

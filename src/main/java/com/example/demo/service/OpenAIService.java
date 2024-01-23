@@ -13,7 +13,7 @@ import com.azure.ai.openai.models.ChatRequestMessage;
 import com.azure.ai.openai.models.ChatRequestUserMessage;
 import com.azure.ai.openai.models.ChatResponseMessage;
 import com.example.demo.domain.model.Document;
-import com.example.demo.domain.model.DocumentTypeEnum;
+import com.example.demo.domain.model.ProfileTypeEnum;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -89,14 +89,14 @@ public class OpenAIService {
     byte[] bytes = multipartFile.getBytes();
 
     String text;
-    DocumentTypeEnum documentType;
+    ProfileTypeEnum documentType;
     try {
       text = documentService.parseDocument(bytes);
-      documentType = DocumentTypeEnum.TEXT;
+      documentType = ProfileTypeEnum.TEXT;
     } catch (Exception e) {
       log.info("Cannot parse the document content, trying to recognize speech");
       text = this.transformSpeechToText(bytes, UUID.randomUUID() + getFileExtension(filename));
-      documentType = DocumentTypeEnum.SPEECH;
+      documentType = ProfileTypeEnum.SPEECH;
     }
 
     return documentService.save(Document.builder()

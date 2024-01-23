@@ -16,14 +16,6 @@ function addRow() {
     formContainer.removeChild(newRow);
   };
 
-  // const removeButton = document.createElement('button');
-  // removeButton.type = 'button';
-  // removeButton.className = 'remove-btn';
-  // removeButton.textContent = '-';
-  // removeButton.onclick = function () {
-  //   formContainer.removeChild(newRow);
-  // };
-
   newRow.appendChild(labelInput);
   newRow.appendChild(keyInput);
 
@@ -91,7 +83,7 @@ function uploadFile() {
   let blob = formData.get("file");
   upload(blob)
 }
-
+const basicAuthToken = btoa(`admin:demo-openai`);
 function upload(blob) {
   const oMyForm = new FormData();
   oMyForm.append("file", blob);
@@ -99,6 +91,10 @@ function upload(blob) {
   fetch('/api/v1/upload', {
     method: 'POST',
     body: oMyForm,
+    headers: {
+      'Authorization': `Basic ${basicAuthToken}`,
+      'Content-Type': 'multipart/form-data',
+    },
   })
   .then(response => {
     if (!response.ok) {
